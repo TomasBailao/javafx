@@ -1,0 +1,100 @@
+List(List(-1237980, -16735512), List(-14066, -14503604))
+List(-16735512, -14503604)
+    y foreach{
+      _ match {
+        case Nil => Nil
+        case x :: xs => println(ImageUtil.decodeRgb(x))
+      }
+
+    }
+List([I@6325a3ee, [I@1d16f93d)
+
+val l1: QLeaf[Coords, Section] = QLeaf((((0,0):Point,(0,0):Point):Coords, Color.red):Section)
+    val l2: QLeaf[Coords, Section] = QLeaf((((1,0):Point,(1,0):Point):Coords, Color.blue):Section)
+    val l3: QLeaf[Coords, Section] = QLeaf((((0,1):Point,(0,1):Point):Coords, Color.yellow):Section)
+    val l4: QLeaf[Coords, Section] = QLeaf((((1,1):Point,(1,1):Point):Coords, Color.green):Section)
+
+    val qt: QTree[Coords] = QNode(((0,0),(1,1)), l1, l2, l3, l4)
+
+
+type BitMap = (List[List[Int]])
+
+object MyTree{
+  type Point = (Int, Int)
+  type Coords = (Point, Point)
+  type Section = (Coords, Color)
+
+
+  def getSizeBitMap(b:String): (Int,Int)={
+    val x= ImageUtil.readColorImage(b)
+    (x.length, x(0).length)
+
+  }
+  def getBitmap(b:String): BitMap = {
+    val x:Array[Array[Int]] = ImageUtil.readColorImage(b)
+    x.map(_.toList).toList
+  }
+
+
+  def makeQTree[A](b:BitMap)={
+    println(b)
+    predecode(b)
+
+
+  }
+  def predecode(x:List[List[Int]]):List[Any]={
+    x match {
+      case Nil => Nil
+      case x::xs=>{
+        decodeR(x)::predecode(xs)
+
+      }
+    }
+  }
+  def decodeR(x:List[Int]):List[Any]= {
+    x match {
+      case Nil => Nil
+      case y :: ys => (ImageUtil.decodeRgb(y) :: decodeR(ys))
+
+
+    }
+  }
+  def mirrorH[A](qt: QTree[A]): QTree[A] = qt match {
+    case QEmpty => QEmpty
+    case QNode(value,one,two,three,four) =>
+      val nOne = mirrorH(two)
+      val nTwo = mirrorH(one)
+      val nThree = mirrorH(four)
+      val nFour = mirrorH(three)
+      QNode(value, nOne, nTwo, nThree, nFour)
+  }
+  def mirrorV[A](qt: QTree[A]): QTree[A] = qt match {
+    case QEmpty => QEmpty
+    case QNode(value,one,two,three,four) =>
+      val nOne = mirrorV(three)
+      val nTwo = mirrorV(four)
+      val nThree = mirrorV(one)
+      val nFour = mirrorV(two)
+      QNode(value, nOne, nTwo, nThree, nFour)
+  }
+  def rotateR[A](qt: QTree[A]): QTree[A] = qt match{
+    case QEmpty=> QEmpty
+    case QNode(value,one,two,three,four)=>
+      val nOne = rotateR(two)
+      val nTwo = rotateR(four)
+      val nThree = rotateR(one)
+      val nFour = rotateR(three)
+      QNode(value, nOne, nTwo, nThree, nFour)
+  }
+  def rotateL[A](qt: QTree[A]): QTree[A] = qt match{
+    case QEmpty=> QEmpty
+    case QNode(value,one,two,three,four)=>
+      val nOne = rotateL(three)
+      val nTwo = rotateL(one)
+      val nThree = rotateL(four)
+      val nFour = rotateL(two)
+      QNode(value, nOne, nTwo, nThree, nFour)
+  }
+
+
+}
